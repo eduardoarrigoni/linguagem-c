@@ -6,18 +6,23 @@ void jogada(int humano, int *num_vitoria_humano, int *num_vitoria_computador, in
 
     int computador;
 
-    computador = rand() % 3;
-    printf("%d", computador);
+    computador = rand() % 4;
+    
     if (humano == computador){
 
         *num_empate += 1;
+        printf("Empate\n");
 
-    }else if((humano == 0 && computador == 2) || (humano == 1 && computador == 0) || (humano == 2 && computador == 1)){
+    }else if((humano == 0 && computador == 2) || (humano == 1 && (computador == 0 || computador == 3)) || (humano == 2 && computador == 1)){
 
         *num_vitoria_humano += 1;
+        printf("Humano vence\n");
+
     }else{
 
         *num_vitoria_computador += 1;
+        printf("Computador vence\n");
+
     }
 }
 int main(){
@@ -25,17 +30,23 @@ int main(){
     int num_vitoria_humano, num_vitoria_computador, num_empate;
     int humano;
     
+    num_empate = num_vitoria_computador = 0;
+
     for (int i = 0; i<=n; ++i){
 
         printf("Escolha uma das opcoes: \n0 - pedra\n1 - papel\n2 - tesoura\n");
         scanf("%d", &humano);
 
+        if (humano > 2){
+
+            return 1;
+        }
         jogada(humano, &num_vitoria_humano, &num_vitoria_computador, &num_empate);
 
     }
-    printf("empate: %d", num_empate);
-    printf("humano: %d", num_vitoria_humano);
-    printf("computador: %d", num_vitoria_computador);
+    printf("Número de vitórias do humano: %d\n", num_vitoria_humano);
+    printf("Número de vitórias do computador: %d\n", num_vitoria_computador);
+    printf("Número de empate: %d", num_empate);
     
     return 0;
 }
