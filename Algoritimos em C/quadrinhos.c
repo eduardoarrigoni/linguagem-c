@@ -84,5 +84,8 @@ int main(){
 
     printf("Tamanho da colecao unificada: %d", tamanho_final);
     
+
+    free(colecao_unificada);
+
 return 0;
 }
