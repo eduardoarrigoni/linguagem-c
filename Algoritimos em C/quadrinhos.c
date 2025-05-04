@@ -6,8 +6,7 @@ int* unir_colecoes(int *colecao_herois_hq, int *colecao_acao_comics, int tamanho
 
     bool validador;
     *tamanho_final = tamanho_herois_hq + tamanho_acao_comics;
-    int *colecao_unificada;
-    colecao_unificada = (int *)malloc(*tamanho_final * sizeof(int));
+    int *colecao_unificada = (int *)malloc(*tamanho_final * sizeof(int));
     int menor;
     int maior;
     int auxiliar[*tamanho_final];
