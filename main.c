@@ -1,34 +1,54 @@
 #include <stdio.h>
-#include "linkedlist.h"
+#include <stdlib.h>
+#include <string.h>
+#include "bd_paciente.h"
 
 int main(){
 
-    LinkedList *l1;
-    LinkedList *l2;
-    LinkedList *list_concatenate;
-    int num;
+    char* filename;
+    printf("Diga o nome do arquivo para que possamos carrega-lo: ");
+    scanf("%s", filename);
 
-    printf("Criado uma lista encadiada\n");
-    l1 = ll_create(); 
+    BDPaciente *bd = bd_criar();
 
-    for (int i = 0; i < 10; i++)
-        printf("Qual o elemento de numero %d: \n", i);
-        scanf("%d", &num);
-        ll_insert(l1, num); // Insert elements into the list using ll_insert.
-    printf("------------\n\n");
+    if (bd_carregar_csv(bd, filename) == 1){
 
-    printf("Criado uma lista encadiada\n");
-    l2 = ll_create(); 
+        return 0;
 
-    for (int i = 0; i < 10; i++)
-        printf("Qual o elemento de numero %d: \n", i);
-        scanf("%d", &num);
-        ll_insert(l2, num); // Insert elements into the list using ll_insert.
-    printf("------------\n\n");
+    }
+    
+    int opcao;
+    
+    while (opcao != 6){
 
-    list_concatenate = ll_concatenate(l1, l2);
+        printf("\n--- Sistema de Pacientes ---\n");
+        printf("1. Inserir paciente\n");
+        printf("2. Consultar paciente\n");
+        printf("3. Atualizar paciente\n");
+        printf("4. Remover paciente\n");
+        printf("5. Imprimir todos os pacientes\n");
+        printf("6. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
 
-    ll_print(list_concatenate);
+        switch (opcao) {
+            case 2: 
+                bd_consultar_paciente(bd); 
+                
+                break;
+            
+            case 5: 
+                bd_imprimir_lista_pacientes(bd); break;
+
+            case 6: 
+                printf("Saindo...\n"); break;
+
+            default: 
+                printf("Opção em manutenção ou inválida.\n");
+        }
+
+
+    }
 
     return 0;
 }

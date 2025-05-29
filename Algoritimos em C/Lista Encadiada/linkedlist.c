@@ -128,11 +128,7 @@ void ll_print(LinkedList *l)
 
 LinkedList *ll_concatenate(LinkedList *l1, LinkedList *l2){
 
-    int size1 = ll_size(l1);
-    int size2 = ll_size(l2);
-
     LinkedList *list_concatenate;
-    ListNode *l1_node;
     ListNode *l1_node = (ListNode *)malloc(sizeof(ListNode));
 
     l1_node->next = l1->first;
@@ -147,13 +143,14 @@ LinkedList *ll_concatenate(LinkedList *l1, LinkedList *l2){
 
         p = p->next;
     }
-
+    
     ListNode *t = l2->first;
     while (t != NULL)
     {
-        ll_insert(list_concatenate, p->info);
-
-        p = p->next;
+        ll_insert(list_concatenate, t->info);
+        
+        t = t->next;
+    
     }
     return list_concatenate;
 }
