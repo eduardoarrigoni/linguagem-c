@@ -7,11 +7,11 @@ int main(){
 
     char* filename;
     printf("Diga o nome do arquivo para que possamos carrega-lo: ");
-    scanf("%s", filename);
-
+    scanf("%s", &filename);
+    
     BDPaciente *bd = bd_criar();
-
-    if (bd_carregar_csv(bd, filename) == 1){
+    
+    if (bd_carregar_csv(&bd, &filename) == 1){
 
         return 0;
 

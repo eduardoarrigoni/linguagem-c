@@ -72,24 +72,23 @@ static void trim_trailing_whitespace(char *s) {
 int bd_carregar_csv(BDPaciente* bd, const char* filename) {
     
     FILE* file = fopen(filename, "r");
+    
     if (file == NULL) {
         fprintf(stderr, "Erro: Não foi possível abrir o arquivo '%s'.\n", filename);
         return 1;
     }
-
-
+    
     char line[256]; // Buffer para ler cada linha do CSV
     int first_line = 1; // Flag para pular o cabeçalho
-
-
+    
+    
     bd->total_pacientes = 0; // Reinicia o contador de pacientes
-
-
+    
+    
     while (fgets(line, sizeof(line), file) != NULL) {
         if (first_line) {
             first_line = 0; // Pula a linha do cabeçalho    
         }
-
 
         // Remove a quebra de linha do final da string
         trim_trailing_whitespace(line);

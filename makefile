@@ -11,7 +11,7 @@ SRCS = main.c bd_paciente.c
 OBJS = $(SRCS:.c=.o)
 
 # Executable name
-TARGET = test_bd_paciente
+TARGET = bd_paciente
 
 # Phony targets
 .PHONY: all compile run clean
@@ -24,7 +24,7 @@ compile: $(TARGET)
 
 # Run the executable
 run: $(TARGET)
-	./$(TARGET)
+		./$(TARGET)
 
 # Clean up
 clean:
