@@ -3,7 +3,7 @@
 
 typedef struct bdpaciente BDPaciente;
 typedef struct paciente Paciente;
-    
+
 BDPaciente* bd_criar();
 
 void bd_destruir(BDPaciente* bd);

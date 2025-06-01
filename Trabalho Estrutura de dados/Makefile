@@ -1,3 +1,4 @@
+
 # Compiler
 CC = gcc
 
@@ -24,7 +25,7 @@ compile: $(TARGET)
 
 # Run the executable
 run: $(TARGET)
-		./$(TARGET)
+	./$(TARGET)
 
 # Clean up
 clean:
