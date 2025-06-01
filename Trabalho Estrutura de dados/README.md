@@ -10,4 +10,4 @@ Para que a execução seja feita de forma correta, é aconselhável que os arqui
 
 Principais TADs: struct paciente, com o objetivo de representar as informações de um paciente, struct bdpaciente, com o objetivo de representar a base de dados que armazena todos pacientes
 
-Tornam o código jmais modular e para uma manutenção mais fácil
+Tornam o código mais modular e para uma manutenção mais fácil.
