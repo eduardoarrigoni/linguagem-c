@@ -6,7 +6,7 @@ typedef struct paciente Paciente;
 
 BDPaciente* bd_criar();
 
-void bd_destruir(BDPaciente* bd);
+void bd_free(BDPaciente* bd);
 
 int bd_carregar_csv(BDPaciente* bd, const char* filename);
 
