@@ -41,6 +41,6 @@ int main() {
         
     }
 
-    bd_destruir(bd); //liberar mem�ria base de dados
+    bd_free(bd); //liberar mem�ria base de dados
     return 0;
 }
