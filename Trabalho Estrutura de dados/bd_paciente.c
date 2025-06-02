@@ -33,7 +33,7 @@ BDPaciente* bd_criar() {
     return bd;
 }
 
-void bd_destruir(BDPaciente* bd) { //liberar mem�ria usada pela base de dados
+void bd_free(BDPaciente* bd) { //liberar mem�ria usada pela base de dados
     if (bd != NULL) {
         free(bd);
     }
