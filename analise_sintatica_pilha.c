@@ -85,46 +85,54 @@ int carregar_txt(const char* filename, Stack *s) { //carregar pacientes a partir
         fprintf("Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
         return 1;
     }
+    
     char line[256];
     
     while (fgets(line, sizeof(line), file) != NULL) {
         
         for (int i = 0; i < 256; i++){
 
-            if (line[i] == "{") s_push(s, line[i]);
+            if (line[i] == "{"){
                 
-            if (line[i] == "[") s_push(s, line[i]);
+                s_push(s, "}");
+                search(s, line);
+                
+            } 
+                
+            if (line[i] == "["){
+                
+                s_push(s, "]");
+                search(s, line);
+                
+            } 
 
-            if (line[i] == "(") s_push(s, line[i]);
- 
+            if (line[i] == "("){
+                
+                s_push(s, ")");
+                search(s, line);
+                
+            } 
         }
     }
+    
+    sem_sintaxe(s);
     return 0;
 }
 
-void search(Stack *s, const char* filename){
-    FILE* file = fopen(filename, "r");
-    if (file == NULL) {
-        fprintf("Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
-        return 1;
-    }
-
-    const char line[256];
+void search(Stack *s, char linha){
     
     for (StackNode *p = s->top; p != NULL; p = p->next){
 
-
-        while (fgets(line, sizeof(line), file) != NULL) {
-        
-            char *token = strtok(line, p->info);
-            if (token){
+        char *token = strtok(line, p->info);
+        if (token){
                 
-                printf("sucess");
-            }else{
-
-                printf("fail");
-            }
-            
-        }
+            printf("sucess");
+            s_pop(s);
     }
+}
+
+void sem_sintaxe(Stack* s){
+    
+    for (StackNode *p = s->top; p != NULL; p = p->next)
+        printf("fail\n", p->info);
 }
