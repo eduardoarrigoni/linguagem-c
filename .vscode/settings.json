@@ -5,6 +5,8 @@
         "linkedlist.h": "c",
         "bd_paciente.h": "c",
         "string.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "analise_sintatica_pilha.h": "c",
+        "ctype.h": "c"
     }
 }

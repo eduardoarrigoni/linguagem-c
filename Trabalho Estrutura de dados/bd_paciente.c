@@ -62,7 +62,6 @@ int bd_carregar_csv(BDPaciente* bd, const char* filename) { //carregar pacientes
     while (fgets(line, sizeof(line), file) != NULL) {
         if (first_line) {
             first_line = 0;
-            continue;
         }
 
         excluir_espaco_branco(line);
