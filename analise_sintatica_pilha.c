@@ -94,25 +94,13 @@ int procurar_sintaxe(FILE* file, Stack *s) { //carregar pacientes a partir de um
         
         for (int i = 0; i < 256; i++){
 
-            if (line[i] == "{"){
+            if (line[i] == "{") s_push(s, "}");   
+            
+            if (line[i] == "[") s_push(s, "]");
                 
-                s_push(s, "}");
+            if (line[i] == "(") s_push(s, ")");
                 
-            } 
-                
-            if (line[i] == "["){
-                
-                s_push(s, "]");
-            } 
-
-            if (line[i] == "("){
-                
-                s_push(s, ")");
-            }
-            if (line[i] == ")" || line[i] == "}" || line[i] == "]"){
-
-                search(s, line);
-            }
+            if (line[i] == ")" || line[i] == "}" || line[i] == "]") search(s, line, file);
         }
     }
     
@@ -120,12 +108,13 @@ int procurar_sintaxe(FILE* file, Stack *s) { //carregar pacientes a partir de um
 }
 
 void search(Stack *s, char linha, FILE* file){
+    
     FILE* atualizado = fopen("transferindo.txt", "w"); 
     //for (StackNode *p = s->top; p != NULL; p = p->next){
     while (fgets(line, sizeof(line), atualizado) != NULL) {
 
-        if (line == linha){
-            //CONTINUAR
+        if (line != linha){
+            fputs(line, atualizado);
         }
     }
         StackNode *p = s->top;
@@ -138,11 +127,11 @@ void search(Stack *s, char linha, FILE* file){
             s_pop(s);
         }
 
-        p = p->next;
 
-        //remover linha antes de chamar a função
-        procurar_sintaxe(file, s);
+        fclose(file);
+        procurar_sintaxe(atualizado, s);
         
+        p = p->next;
     //}
     }
     sem_sintaxe(s);
