@@ -78,13 +78,15 @@ void s_print(Stack *s)
 
     printf("\n");
 }
-
-int carregar_txt(const char* filename, Stack *s) { //carregar pacientes a partir de um arquivo csv
+int abrir_arquivo(const char* filename, Stack *s){
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         fprintf("Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
         return 1;
     }
+    carregar_txt(file, s);
+}
+int procurar_sintaxe(FILE* file, Stack *s) { //carregar pacientes a partir de um arquivo csv
     
     char line[256];
     
@@ -95,22 +97,17 @@ int carregar_txt(const char* filename, Stack *s) { //carregar pacientes a partir
             if (line[i] == "{"){
                 
                 s_push(s, "}");
-                search(s, line);
                 
             } 
                 
             if (line[i] == "["){
                 
                 s_push(s, "]");
-                search(s, line);
-                
             } 
 
             if (line[i] == "("){
                 
                 s_push(s, ")");
-                search(s, line);
-                
             }
             if (line[i] == ")" || line[i] == "}" || line[i] == "]"){
 
@@ -123,15 +120,25 @@ int carregar_txt(const char* filename, Stack *s) { //carregar pacientes a partir
     return 0;
 }
 
-void search(Stack *s, char linha){
+void search(Stack *s, char linha, FILE* file){
     
     //for (StackNode *p = s->top; p != NULL; p = p->next){
+    
         StackNode *p = s->top;
+    while (p != NULL){
+        
         char *token = strtok(linha, p->info);
         if (token){
                 
             printf("sucess");
             s_pop(s);
+        }
+
+        p = p->next;
+
+        //remover linha antes de chamar a função
+        procurar_sintaxe(file, s);
+        
     //}
 }
 
