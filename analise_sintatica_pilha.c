@@ -111,7 +111,11 @@ int carregar_txt(const char* filename, Stack *s) { //carregar pacientes a partir
                 s_push(s, ")");
                 search(s, line);
                 
-            } 
+            }
+            if (line[i] == ")" || line[i] == "}" || line[i] == "]"){
+
+                search(s, line);
+            }
         }
     }
     
@@ -121,14 +125,14 @@ int carregar_txt(const char* filename, Stack *s) { //carregar pacientes a partir
 
 void search(Stack *s, char linha){
     
-    for (StackNode *p = s->top; p != NULL; p = p->next){
-
-        char *token = strtok(line, p->info);
+    //for (StackNode *p = s->top; p != NULL; p = p->next){
+        StackNode *p = s->top;
+        char *token = strtok(linha, p->info);
         if (token){
                 
             printf("sucess");
             s_pop(s);
-    }
+    //}
 }
 
 void sem_sintaxe(Stack* s){
