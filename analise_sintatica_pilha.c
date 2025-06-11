@@ -111,7 +111,7 @@ void search(Stack *s, char linha, FILE* file){
     
     FILE* atualizado = fopen("transferindo.txt", "w"); 
     //for (StackNode *p = s->top; p != NULL; p = p->next){
-    while (fgets(line, sizeof(line), atualizado) != NULL) {
+    while (fgets(line, sizeof(line), file) != NULL) {
 
         if (line != linha){
             fputs(line, atualizado);
