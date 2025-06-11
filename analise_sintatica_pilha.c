@@ -84,7 +84,7 @@ int abrir_arquivo(const char* filename, Stack *s){
         fprintf("Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
         return 1;
     }
-    carregar_txt(file, s);
+    procurar_sintaxe(file, s);
 }
 int procurar_sintaxe(FILE* file, Stack *s) { //carregar pacientes a partir de um arquivo csv
     
@@ -116,14 +116,18 @@ int procurar_sintaxe(FILE* file, Stack *s) { //carregar pacientes a partir de um
         }
     }
     
-    sem_sintaxe(s);
     return 0;
 }
 
 void search(Stack *s, char linha, FILE* file){
-    
+    FILE* atualizado = fopen("transferindo.txt", "w"); 
     //for (StackNode *p = s->top; p != NULL; p = p->next){
-    
+    while (fgets(line, sizeof(line), atualizado) != NULL) {
+
+        if (line == linha){
+            //CONTINUAR
+        }
+    }
         StackNode *p = s->top;
     while (p != NULL){
         
@@ -140,7 +144,8 @@ void search(Stack *s, char linha, FILE* file){
         procurar_sintaxe(file, s);
         
     //}
-}
+    }
+    sem_sintaxe(s);
 
 void sem_sintaxe(Stack* s){
     
