@@ -1,5 +1,5 @@
-#ifndef STACK_H
-#define STACK_H
+#ifndef analise_sintatica_pilha_H
+#define analise_sintatica_pilha_H
 
 typedef struct stack Stack;
 typedef struct stacknode StackNode;
@@ -23,5 +23,9 @@ int carregar_txt(const char* filename, Stack* s);
 int verificacao(Stack *s, const char caracter);
 
 void search(Stack *s, FILE *file);
+
+void sem_sintaxe(Stack* s);
+
+void search(Stack *s, char linha, FILE* file);
 
 #endif

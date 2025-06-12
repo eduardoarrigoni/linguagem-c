@@ -135,7 +135,7 @@ void search(Stack *s, char linha, FILE* file){
     //}
     }
     sem_sintaxe(s);
-
+}
 void sem_sintaxe(Stack* s){
     
     for (StackNode *p = s->top; p != NULL; p = p->next)
