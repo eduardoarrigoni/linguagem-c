@@ -12,20 +12,18 @@ char s_top(Stack *q);
 
 void s_push(Stack *s, char* v);
 
+void l_push(Stack *l, char* v);
+
 int s_is_empty(Stack *s);
 
 void s_free(Stack *s);
 
 void s_print(Stack *s);
 
-int carregar_txt(const char* filename, Stack* s);
+int procurar_sintaxe(const char* filename, Stack *s, Stack* l);
 
-int verificacao(Stack *s, const char caracter);
+void sem_sintaxe(Stack* s, Stack* l);
 
-void search(Stack *s, FILE *file);
-
-void sem_sintaxe(Stack* s);
-
-void search(Stack *s, char linha, FILE* file);
+void search(Stack *s, Stack* l, char* caracter);
 
 #endif

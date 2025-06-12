@@ -5,22 +5,14 @@
 
 int main() {
     char filename[100];
-    printf("Diga o nome do arquivo para que possamos carrega-lo: "); //nome do arquivo csv que o usu�rio quer carregar
+    printf("Diga o nome do arquivo para que possamos carrega-lo: "); 
     scanf("%99s", filename);
 
     Stack* s = s_create();
-
-    if (carregar_txt(filename, s) == 1) {
+    Stack* l = s_create();
+    if (procurar_sintaxe(filename, s, l) == 1) {
         return 0;
-    }else{
-        printf("Pilha formada\n");
     }
-
-    
-
-
-
-
 
 
     return 0;
