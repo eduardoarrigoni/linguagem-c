@@ -146,11 +146,9 @@ void search(Stack *s, char *l, char* caracter){
 }
 void sem_sintaxe(Stack* s, char* l){
     
-    char* vai;
-
     for (StackNode *i = s->top; i != NULL; i = i->next){
         for (int j = 0; j < (sizeof(l)/sizeof(char)); j++){
-            l[j] = vai;
+
             if (i->info == l[j]){
 
                 printf("sucess\n");
