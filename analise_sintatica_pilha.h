@@ -12,7 +12,7 @@ char s_top(Stack *q);
 
 void s_push(Stack *s, char* v);
 
-void l_push(Stack *l, char* v);
+void l_push(char *l, char v);
 
 int s_is_empty(Stack *s);
 
@@ -20,10 +20,10 @@ void s_free(Stack *s);
 
 void s_print(Stack *s);
 
-int procurar_sintaxe(const char* filename, Stack *s, Stack* l);
+int procurar_sintaxe(const char* filename, Stack *s, char* l);
 
-void sem_sintaxe(Stack* s, Stack* l);
+void sem_sintaxe(Stack* s, char* l);
 
-void search(Stack *s, Stack* l, char* caracter);
+void search(Stack *s, char* l, char* caracter);
 
 #endif

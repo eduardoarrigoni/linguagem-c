@@ -39,12 +39,23 @@ void s_push(Stack *s, char* v)
     node->next = s->top;
     s->top = node;
 }
-void l_push(Stack *l, char* v)
-{
-    StackNode *node = (StackNode *)malloc(sizeof(StackNode)); // Allocate memory for a new node.
-    node->info = v;
-    node->next = l->top;
-    l->top = node;
+void l_push(char *l, char v)
+{   
+    int size = 0;
+    for (int i = 0; i < (sizeof(l)/sizeof(char)); i++){
+
+        if (l[i] != '}' || l[i] != ']' || l[i] != ')'){
+
+            size += 1;
+        }
+    }
+    if (size == sizeof(*l)/sizeof(char)){
+
+        l = (char *)realloc(l, 2*(size) * sizeof(char));
+    }
+
+    l[size] = v;
+    
 }
 //char s_top(Stack *s)
 //{
@@ -85,7 +96,7 @@ void s_print(Stack *s)
     printf("\n");
 }
 
-int procurar_sintaxe(const char* filename, Stack *s, Stack* l) {
+int procurar_sintaxe(const char* filename, Stack *s, char* l) {
 
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
@@ -99,7 +110,10 @@ int procurar_sintaxe(const char* filename, Stack *s, Stack* l) {
         
         for (int i = 0; i < 256; i++){
 
-            if (line[i] == '{') s_push(s, "}");   
+            if (line[i] == '{') {
+                printf("entrou");
+                s_push(s, "}");   
+            } 
             
             if (line[i] == '[') s_push(s, "]");
                 
@@ -116,8 +130,9 @@ int procurar_sintaxe(const char* filename, Stack *s, Stack* l) {
     return 0;
 }
 
-void search(Stack *s, Stack *l, char* caracter){
+void search(Stack *s, char *l, char* caracter){
     
+
     StackNode *p = s->top;
 
     if (caracter == p->info){
@@ -129,15 +144,18 @@ void search(Stack *s, Stack *l, char* caracter){
         l_push(l, caracter);
     }
 }
-void sem_sintaxe(Stack* s, Stack* l){
+void sem_sintaxe(Stack* s, char* l){
     
-    for (StackNode *i = s->top; i != NULL; i = i->next){
-        for (StackNode *j = s->top; j != NULL; j = j->next){
+    char* vai;
 
-            if (i->info == j->info){
+    for (StackNode *i = s->top; i != NULL; i = i->next){
+        for (int j = 0; j < (sizeof(l)/sizeof(char)); j++){
+            l[j] = vai;
+            if (i->info == l[j]){
 
                 printf("sucess\n");
                 s_pop(s);
+                l[j] = NULL;
                 printf("Foi encontrado o par do caracter\n");
             }
             
