@@ -6,13 +6,11 @@
 int main() {
     char filename[100];
     printf("Diga o nome do arquivo para que possamos carrega-lo: "); 
-    scanf("%99s", filename);
-    char* l;
-    l = (char*)malloc(sizeof(char)*10);
+    scanf("%s", filename);
 
     Stack* s = s_create();
 
-    if (procurar_sintaxe(filename, s, l) == 1) {
+    if (procurar_sintaxe(filename, s) == 1) {
         return 0;
     }
 
