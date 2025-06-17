@@ -6,13 +6,13 @@ CC = gcc
 CFLAGS = -Wall
 
 # Source files
-SRCS = main.c analise_sintatica_pilha.c
+SRCS = main.c bd_paciente.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
 
 # Executable name
-TARGET = analise_sintatica_pilha
+TARGET = bd_paciente
 
 # Phony targets
 .PHONY: all compile run clean
