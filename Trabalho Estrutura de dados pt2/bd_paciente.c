@@ -204,7 +204,7 @@ void paciente_imprimir(Paciente p) { //imprimir �nico paciente
            p.id, p.cpf, p.nome, p.idade, p.data_cadastro);
 }
 
-void bd_inserir_paciente(bd){
+void bd_inserir_paciente(BDPaciente* bd){
     int cpf;
     char nome[50];
     int idade;
@@ -217,5 +217,6 @@ void bd_inserir_paciente(bd){
     scanf("%s", &data_cadastro);
 
     printf("Confirma a inserção do registro abaixo? (S/N)\n");
-    
+    imprimir_cabecalho();
+    printf("%-4d %-15s %-30s %-5d %-12s\n", bd->total_pacientes, cpf, nome, idade, data_cadastro);
 }
