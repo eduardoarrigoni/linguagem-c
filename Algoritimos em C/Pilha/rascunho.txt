@@ -2,5 +2,5 @@ FILE* atualizado = fopen("transferindo.txt", "w");
 while (fgets(line, sizeof(line), file) != NULL) {
         if (line != linha){
             fputs(line, atualizado);
-        }
+        }{
     }

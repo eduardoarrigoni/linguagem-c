@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
 #include "bd_paciente.h"
 
 #define MAX_PACIENTES 100
@@ -13,7 +14,8 @@
 struct queue
 {
    BDPaciente *front; // Pointer to the front of the queue.
-   BDPaciente *rear;  // Pointer to the rear of the queue.
+   BDPaciente *rear;
+   int total_pacientes;  // Pointer to the rear of the queue.
 };
 struct paciente { //estrutura para cada paciente
     int id;
@@ -25,7 +27,6 @@ struct paciente { //estrutura para cada paciente
 
 struct bdpaciente {
     Paciente pacientes[MAX_PACIENTES];
-    int total_pacientes;
     BDPaciente *next;
 };
 
@@ -33,20 +34,50 @@ Queue *q_create()
 {
    Queue *q = (Queue *)malloc(sizeof(Queue)); // Allocate memory for the queue structure.
    q->front = q->rear = NULL;
-   printf("Base de dados criada.");                // Initialize the front and rear pointers to NULL, indicating an empty queue.
+   printf("Base de dados criada.\n");                // Initialize the front and rear pointers to NULL, indicating an empty queue.
    return q;
 }
-
-void q_free(Queue *q)
+int q_is_empty(Queue *bd)
 {
-   BDPaciente *p = q->front;
+   return bd->front == NULL;
+}
+void *inserir_na_fila(Queue *bd, Paciente paciente){
+
+    BDPaciente *node = (BDPaciente*)malloc(sizeof(BDPaciente));
+    node->pacientes[MAX_PACIENTES] = paciente;
+    node->next = NULL;
+    if (q_is_empty(bd)){
+        bd->front = node;
+    }else{
+        bd->rear->next = node;
+    }
+    bd->rear = node;
+}
+Paciente remover_da_fila(Queue *bd)
+{
+   assert(!q_is_empty(bd));
+
+   Paciente *v = bd->front->pacientes;
+   BDPaciente *p = bd->front; // Store for removal
+
+   if (bd->front != bd->rear)
+      bd->front = bd->front->next;
+   else
+      bd->front = bd->rear = NULL;
+
+   free(p);
+   return *v;
+}
+void q_free(Queue *bd)
+{
+   BDPaciente *p = bd->front;
    while (p != NULL)
    {
       BDPaciente *t = p->next; // Store a reference to the next node.
       free(p);                // Free the memory allocated for the current node.
       p = t;                  // Move to the next node.
    }
-   free(q); // Free the memory allocated for the queue structure itself.
+   free(bd); // Free the memory allocated for the queue structure itself.
 }
 
 void excluir_espaco_branco(char *s) { //remover espa�os em branco no final da string
@@ -57,7 +88,7 @@ void excluir_espaco_branco(char *s) { //remover espa�os em branco no final da 
     }
 }
 
-int bd_carregar_csv(BDPaciente* bd, const char* filename) { //carregar pacientes a partir de um arquivo csv
+int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a partir de um arquivo csv
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         fprintf(stderr, "Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
@@ -85,32 +116,33 @@ int bd_carregar_csv(BDPaciente* bd, const char* filename) { //carregar pacientes
             break;
         }
 
-        Paciente p; //leitura e separa��o dos campos do csv
+        Paciente *p; //leitura e separa��o dos campos do csv
         char *token = strtok(line, ",");
-        if (token) p.id = atoi(token);
+        if (token) 
+            p->id = atoi(token);
 
         token = strtok(NULL, ",");
         if (token) {
-            strncpy(p.cpf, token, MAX_CPF_LEN - 1);
-            p.cpf[MAX_CPF_LEN - 1] = '\0';
+            strncpy(p->cpf, token, MAX_CPF_LEN - 1);
+            p->cpf[MAX_CPF_LEN - 1] = '\0';
         }
 
         token = strtok(NULL, ",");
         if (token) {
-            strncpy(p.nome, token, MAX_NOME_LEN - 1);
-            p.nome[MAX_NOME_LEN - 1] = '\0';
+            strncpy(p->nome, token, MAX_NOME_LEN - 1);
+            p->nome[MAX_NOME_LEN - 1] = '\0';
         }
 
         token = strtok(NULL, ",");
-        if (token) p.idade = atoi(token);
+        if (token) p->idade = atoi(token);
 
         token = strtok(NULL, ",");
         if (token) {
-            strncpy(p.data_cadastro, token, MAX_DATA_LEN - 1);
-            p.data_cadastro[MAX_DATA_LEN - 1] = '\0';
+            strncpy(p->data_cadastro, token, MAX_DATA_LEN - 1);
+            p->data_cadastro[MAX_DATA_LEN - 1] = '\0';
         }
 
-        bd->pacientes[bd->total_pacientes++] = p;
+        bd->front->pacientes[bd->total_pacientes++] = *p;
     }
 
     fclose(file);
@@ -124,7 +156,7 @@ void imprimir_cabecalho() { //exibir o cabe�alho da tabela de pacientes
     printf("---- --------------- ------------------------------ ----- ------------\n");
 }
 
-void bd_consultar_paciente(BDPaciente* bd) { //consulta do paciente por nome ou cpf
+void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
     if (bd->total_pacientes == 0) {
         printf("Nenhum paciente cadastrado para consulta.\n");
         return;
@@ -157,16 +189,16 @@ void bd_consultar_paciente(BDPaciente* bd) { //consulta do paciente por nome ou 
 
     imprimir_cabecalho();
 
-    for (int i = 0; i < bd->total_pacientes; i++) { //busca pelos poss�veis pacientes com o que foi digitado pelo usu�rio
+    for (BDPaciente *p = bd->front; p != NULL; p = p->next) { //busca pelos poss�veis pacientes com o que foi digitado pelo usu�rio
         int encontra = 0;
-        if (escolha_modo == 1 && strstr(bd->pacientes[i].nome, termo_busca)) { //utiliza��o de strstr() para encontrar primeira ocorr�ncia de uma substring na string principal
+        if (escolha_modo == 1 && strstr(p->pacientes->nome, termo_busca)) { //utiliza��o de strstr() para encontrar primeira ocorr�ncia de uma substring na string principal
             encontra = 1;
-        } else if (escolha_modo == 2 && strstr(bd->pacientes[i].cpf, termo_busca)) {
+        } else if (escolha_modo == 2 && strstr(p->pacientes->cpf, termo_busca)) {
             encontra = 1;
         }
 
         if (encontra) {
-            paciente_imprimir(bd->pacientes[i]);
+            paciente_imprimir(*p->pacientes);
             encontrados++;
         }
     }
@@ -178,7 +210,7 @@ void bd_consultar_paciente(BDPaciente* bd) { //consulta do paciente por nome ou 
     }
 }
 
-void bd_imprimir_lista_pacientes(BDPaciente* bd) { //imprimir todos pacientes
+void bd_imprimir_lista_pacientes(Queue* bd) { //imprimir todos pacientes
     if (bd->total_pacientes == 0) {
         printf("Nenhum paciente cadastrado para imprimir.\n");
         return;
@@ -187,13 +219,14 @@ void bd_imprimir_lista_pacientes(BDPaciente* bd) { //imprimir todos pacientes
     printf("\nImprimindo lista de pacientes...\n");
     imprimir_cabecalho();
 
-	for (int i = 0; i < bd->total_pacientes; i++) {
-        paciente_imprimir(bd->pacientes[i]);
-		
-        if ((i + 1) % TAMANHO_PAGINA == 0 && (i + 1) < bd->total_pacientes) { //pagina��o
+	for (BDPaciente *p = bd->front; p != NULL; p = p->next) {
+        paciente_imprimir(*p->pacientes);
+		int a = 0;
+        if ((a + 1) % TAMANHO_PAGINA == 0 && (a + 1) < bd->total_pacientes) { //pagina��o
             printf("\nPressione ENTER para ver a proxima pagina...\n");
             while (getchar() != '\n');
         }
+        a += 1;
     }
 
     printf("\nFim da lista de pacientes.\n");
@@ -204,17 +237,17 @@ void paciente_imprimir(Paciente p) { //imprimir �nico paciente
            p.id, p.cpf, p.nome, p.idade, p.data_cadastro);
 }
 
-void bd_inserir_paciente(BDPaciente* bd){
-    int cpf;
+void bd_inserir_paciente(Queue* bd){
+    char cpf[25];
     char nome[50];
     int idade;
     char data_cadastro[20];
     printf("Para inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
 
-    scanf("%d", &cpf);
-    scanf("%s", &nome);
+    scanf("%s", &cpf[25]);
+    scanf("%s", &nome[50]);
     scanf("%d", &idade);
-    scanf("%s", &data_cadastro);
+    scanf("%s", &data_cadastro[20]);
 
     printf("Confirma a inserção do registro abaixo? (S/N)\n");
     imprimir_cabecalho();

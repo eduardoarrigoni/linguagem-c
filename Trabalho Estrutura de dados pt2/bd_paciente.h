@@ -9,16 +9,24 @@ BDPaciente* bd_criar();
 
 Queue *q_create();
 
-void q_free(Queue *q);
+void *inserir_na_fila(Queue *bd, Paciente paciente);
 
-int bd_carregar_csv(BDPaciente* bd, const char* filename);
+void excluir_espaco_branco(char *s);
 
-void bd_consultar_paciente(BDPaciente* bd);
+Paciente remover_da_fila(Queue *bd);
 
-void bd_imprimir_lista_pacientes(BDPaciente* bd);
+int q_is_empty(Queue *bd);
+
+void q_free(Queue *bd);
+
+int bd_carregar_csv(Queue* bd, const char* filename);
+
+void bd_consultar_paciente(Queue* bd);
+
+void bd_imprimir_lista_pacientes(Queue* bd);
 
 void paciente_imprimir(Paciente p);
 
-void bd_inserir_paciente(bd);
+void bd_inserir_paciente(Queue* bd);
 
 #endif 

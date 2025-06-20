@@ -8,7 +8,7 @@ int main() {
     printf("Diga o nome do arquivo para que possamos carrega-lo: "); //nome do arquivo csv que o usu�rio quer carregar
     scanf("%99s", filename);
 
-    BDPaciente *bd = bd_criar(); //criar base de dados de pacientes
+    Queue *bd = q_create(); //criar base de dados de pacientes
     if (bd_carregar_csv(bd, filename) == 1) {
         return 0;
     }
@@ -33,10 +33,10 @@ int main() {
                 bd_consultar_paciente(bd);
                 break;
             case 3:
-                bd_atualizar_paciente(bd);
+                //bd_atualizar_paciente(bd);
                 break;
             case 4:
-                bd_remover_paciente(bd);
+                //bd_remover_paciente(bd);
                 break;
             case 5:
                 bd_imprimir_lista_pacientes(bd);
@@ -50,6 +50,6 @@ int main() {
         
     }
 
-    bd_free(bd); //liberar mem�ria base de dados
+    q_free(bd); //liberar mem�ria base de dados
     return 0;
 }
