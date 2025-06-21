@@ -9,7 +9,7 @@ BDPaciente* bd_criar();
 
 Queue *q_create();
 
-void *inserir_na_fila(Queue *bd, Paciente paciente);
+void inserir_na_fila(Queue *bd, Paciente paciente);
 
 void excluir_espaco_branco(char *s);
 

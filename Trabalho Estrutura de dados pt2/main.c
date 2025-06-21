@@ -13,41 +13,36 @@ int main() {
         return 0;
     }
 
-    int opcao = 0;
-    while (opcao != 6) { //menu principal
+    char opcao;
+    while (opcao != 'q') { //menu principal
         printf("\n--- Sistema de Pacientes ---\n");
         printf("1. Inserir paciente\n");
         printf("2. Consultar paciente\n");
         printf("3. Atualizar paciente\n");
         printf("4. Remover paciente\n");
         printf("5. Imprimir todos os pacientes\n");
-        printf("6. Sair\n");
+        printf("Q. Sair\n");
         printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
+        scanf("%c", &opcao);
 
-        switch (opcao) { // executa de acordo com op��o escolhida
-            case 1:
-                bd_inserir_paciente(bd);
-                break;
-            case 2:
-                bd_consultar_paciente(bd);
-                break;
-            case 3:
-                //bd_atualizar_paciente(bd);
-                break;
-            case 4:
-                //bd_remover_paciente(bd);
-                break;
-            case 5:
-                bd_imprimir_lista_pacientes(bd);
-                break;
-            case 6:
-                printf("Saindo...\n");
-                break;
-            default:
-                printf("Opcao invalida.\n");
+        if (opcao == '1') { // executa de acordo com op��o escolhida
+            bd_inserir_paciente(bd);
         }
-        
+        if (opcao == '2'){
+            bd_consultar_paciente(bd);
+        }
+        if (opcao == '3'){
+            //bd_atualizar_paciente(bd);
+        }
+        if (opcao == '4'){
+            //bd_remover_paciente(bd);
+        }
+        if (opcao == '5'){
+            bd_imprimir_lista_pacientes(bd);
+        }
+        if (opcao == 'q'){
+            printf("Saindo...\n");
+        }
     }
 
     q_free(bd); //liberar mem�ria base de dados

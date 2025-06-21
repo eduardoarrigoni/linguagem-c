@@ -5,7 +5,6 @@
 #include <assert.h>
 #include "bd_paciente.h"
 
-#define MAX_PACIENTES 100
 #define TAMANHO_PAGINA 10
 #define MAX_CPF_LEN 15
 #define MAX_NOME_LEN 100
@@ -26,7 +25,7 @@ struct paciente { //estrutura para cada paciente
 };
 
 struct bdpaciente {
-    Paciente pacientes[MAX_PACIENTES];
+    Paciente pacientes;
     BDPaciente *next;
 };
 
@@ -41,23 +40,23 @@ int q_is_empty(Queue *bd)
 {
    return bd->front == NULL;
 }
-void *inserir_na_fila(Queue *bd, Paciente paciente){
+void inserir_na_fila(Queue *bd, Paciente paciente){
 
     BDPaciente *node = (BDPaciente*)malloc(sizeof(BDPaciente));
-    node->pacientes[MAX_PACIENTES] = paciente;
+    node->pacientes = paciente;
     node->next = NULL;
     if (q_is_empty(bd)){
         bd->front = node;
     }else{
         bd->rear->next = node;
     }
+    bd->total_pacientes += 1;
     bd->rear = node;
 }
-Paciente remover_da_fila(Queue *bd)
-{
+Paciente remover_da_fila(Queue *bd){
    assert(!q_is_empty(bd));
 
-   Paciente *v = bd->front->pacientes;
+   Paciente v = bd->front->pacientes;
    BDPaciente *p = bd->front; // Store for removal
 
    if (bd->front != bd->rear)
@@ -66,7 +65,7 @@ Paciente remover_da_fila(Queue *bd)
       bd->front = bd->rear = NULL;
 
    free(p);
-   return *v;
+   return v;
 }
 void q_free(Queue *bd)
 {
@@ -94,55 +93,50 @@ int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a pa
         fprintf(stderr, "Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
         return 1;
     }
-
+    
     char line[256];
     int first_line = 1;
-
+    
     bd->total_pacientes = 0;
-
+    
     while (fgets(line, sizeof(line), file) != NULL) {
         if (first_line) {
             first_line = 0;
         }
-
+        
         excluir_espaco_branco(line);
-
+        
         if (strlen(line) == 0) {
             continue;
         }
-
-        if (bd->total_pacientes >= MAX_PACIENTES) {
-            fprintf(stderr, "Aviso: Limite maximo de pacientes atingido (%d). Ignorando registros restantes.\n", MAX_PACIENTES);
-            break;
-        }
-
-        Paciente *p; //leitura e separa��o dos campos do csv
+        
+        Paciente p; //leitura e separação dos campos do csv
         char *token = strtok(line, ",");
-        if (token) 
-            p->id = atoi(token);
-
+        if (token) p.id = atoi(token);
+        
         token = strtok(NULL, ",");
         if (token) {
-            strncpy(p->cpf, token, MAX_CPF_LEN - 1);
-            p->cpf[MAX_CPF_LEN - 1] = '\0';
+            strncpy(p.cpf, token, MAX_CPF_LEN - 1);
+            p.cpf[MAX_CPF_LEN - 1] = '\0';
         }
 
         token = strtok(NULL, ",");
         if (token) {
-            strncpy(p->nome, token, MAX_NOME_LEN - 1);
-            p->nome[MAX_NOME_LEN - 1] = '\0';
+            strncpy(p.nome, token, MAX_NOME_LEN - 1);
+            p.nome[MAX_NOME_LEN - 1] = '\0';
         }
 
         token = strtok(NULL, ",");
-        if (token) p->idade = atoi(token);
+        if (token) p.idade = atoi(token);
 
         token = strtok(NULL, ",");
         if (token) {
-            strncpy(p->data_cadastro, token, MAX_DATA_LEN - 1);
-            p->data_cadastro[MAX_DATA_LEN - 1] = '\0';
+            strncpy(p.data_cadastro, token, MAX_DATA_LEN - 1);
+            p.data_cadastro[MAX_DATA_LEN - 1] = '\0';
         }
-
-        bd->front->pacientes[bd->total_pacientes++] = *p;
+        
+        inserir_na_fila(bd, p);
+        
     }
 
     fclose(file);
@@ -191,14 +185,14 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
 
     for (BDPaciente *p = bd->front; p != NULL; p = p->next) { //busca pelos poss�veis pacientes com o que foi digitado pelo usu�rio
         int encontra = 0;
-        if (escolha_modo == 1 && strstr(p->pacientes->nome, termo_busca)) { //utiliza��o de strstr() para encontrar primeira ocorr�ncia de uma substring na string principal
+        if (escolha_modo == 1 && strstr(p->pacientes.nome, termo_busca)) { //utiliza��o de strstr() para encontrar primeira ocorr�ncia de uma substring na string principal
             encontra = 1;
-        } else if (escolha_modo == 2 && strstr(p->pacientes->cpf, termo_busca)) {
+        } else if (escolha_modo == 2 && strstr(p->pacientes.cpf, termo_busca)) {
             encontra = 1;
         }
 
         if (encontra) {
-            paciente_imprimir(*p->pacientes);
+            paciente_imprimir(p->pacientes);
             encontrados++;
         }
     }
@@ -220,7 +214,7 @@ void bd_imprimir_lista_pacientes(Queue* bd) { //imprimir todos pacientes
     imprimir_cabecalho();
 
 	for (BDPaciente *p = bd->front; p != NULL; p = p->next) {
-        paciente_imprimir(*p->pacientes);
+        paciente_imprimir(p->pacientes);
 		int a = 0;
         if ((a + 1) % TAMANHO_PAGINA == 0 && (a + 1) < bd->total_pacientes) { //pagina��o
             printf("\nPressione ENTER para ver a proxima pagina...\n");
@@ -236,20 +230,49 @@ void paciente_imprimir(Paciente p) { //imprimir �nico paciente
     printf("%-4d %-15s %-30s %-5d %-12s\n",
            p.id, p.cpf, p.nome, p.idade, p.data_cadastro);
 }
+void formatarCPF(const char *entrada, char *saida) {
+    // Verifica se a string de entrada tem exatamente 11 dígitos
+    if (strlen(entrada) > 12) {
+        sprintf(saida, "CPF inválido");
+        return;
+    }
 
+    // Formata a string no padrão XXX.XXX.XXX-XX
+    sprintf(saida, "%.3s.%.3s.%.3s-%.2s",
+            entrada, entrada + 3, entrada + 6, entrada + 9);
+}
 void bd_inserir_paciente(Queue* bd){
+
     char cpf[25];
     char nome[50];
     int idade;
     char data_cadastro[20];
+    char escolha = 'n';
+    char saida_cpf[15];
+
     printf("Para inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
+    while (escolha != 's'){
+        scanf("%s", &cpf[25]);
+        scanf(" %s", &nome[50]);
+        scanf(" %d", &idade);
+        scanf(" %s", &data_cadastro[20]);
 
-    scanf("%s", &cpf[25]);
-    scanf("%s", &nome[50]);
-    scanf("%d", &idade);
-    scanf("%s", &data_cadastro[20]);
+        printf("Confirma a inserção do registro abaixo? (S/N)\n");
+        
+        imprimir_cabecalho();
+        printf("%-4d ", bd->total_pacientes);
+        
+        formatarCPF(cpf, saida_cpf);
+        
+        printf("%s ", saida_cpf);    
+        printf("%-30s %-5d %-12s\n", nome, idade, data_cadastro);
+            
+        scanf(" %c", &escolha);
 
-    printf("Confirma a inserção do registro abaixo? (S/N)\n");
-    imprimir_cabecalho();
-    printf("%-4d %-15s %-30s %-5d %-12s\n", bd->total_pacientes, cpf, nome, idade, data_cadastro);
+        if (escolha == 'n'){
+            printf("Ops, preencha novamente: \n");
+        }
+ 
+    }
+    printf("O registro foi inserido com sucesso.\n");
 }
