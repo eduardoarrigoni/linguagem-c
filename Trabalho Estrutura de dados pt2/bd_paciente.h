@@ -27,6 +27,10 @@ void bd_imprimir_lista_pacientes(Queue* bd);
 
 void paciente_imprimir(Paciente p);
 
+void formatarCPF(const char *entrada, char *saida);
+
 void bd_inserir_paciente(Queue* bd);
+
+void bd_atualizar_paciente(Queue* bd);
 
 #endif 

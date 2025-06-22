@@ -165,7 +165,7 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
         printf("1 - Por nome\n");
         printf("2 - Por CPF\n");
         printf("3 - Retornar ao menu principal\n");
-        printf("[Usuario]");
+        printf("[Usuario]\n");
         scanf("%d", &escolha_modo);
         getchar();
 
@@ -250,12 +250,14 @@ void bd_inserir_paciente(Queue* bd){
     char escolha = 'n';
     char saida_cpf[15];
 
-    printf("Para inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
+    printf("[Sistema]\nPara inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
     while (escolha != 's' || escolha == 'q'){
         scanf("%s", &cpf);
         scanf(" %s", &nome);
         scanf(" %d", &idade);
         scanf(" %s", &data_cadastro);
+
+        printf("[Sistema]\nConfirma a inserção do registro abaixo? (S/N)\n");
 
         imprimir_cabecalho();
         printf("%-4d ", bd->total_pacientes);
@@ -265,17 +267,12 @@ void bd_inserir_paciente(Queue* bd){
         printf("%s ", saida_cpf);    
         printf(" %-30s %-5d %-12s\n", nome, idade, data_cadastro);
         
-        printf("Confirma a inserção do registro? (S/N)\n");
         scanf(" %c", &escolha);
 
-        if(escolha == 'q'){
-            printf("Saindo...\n");
-        }else{
-
-            if (escolha != 's'){
-                printf("Ops, preencha novamente: \n");
-            }
+        if (escolha != 's'){
+            printf("[Sistema]\nOps, preencha novamente: \n");
         }
+        
         
     }
     if(escolha == 's'){
@@ -283,10 +280,31 @@ void bd_inserir_paciente(Queue* bd){
         Paciente p;
 
         p.id = bd->total_pacientes;
-        p.cpf = saida_cpf;
-        p.nome = nome;
-        p.
-        printf("O registro foi inserido com sucesso.\n");
+        strncpy(p.cpf, saida_cpf, MAX_CPF_LEN - 1);
+        p.cpf[MAX_CPF_LEN - 1] = '\0';
+        
+        strncpy(p.nome, nome, MAX_NOME_LEN - 1);
+        p.nome[MAX_NOME_LEN - 1] = '\0';
+
+        p.idade = idade;
+
+        strncpy(p.data_cadastro, data_cadastro, MAX_DATA_LEN - 1);
+        p.data_cadastro[MAX_DATA_LEN - 1] = '\0';
+
+        inserir_na_fila(bd, p);
+        
+        printf("[Sistema]\nO registro foi inserido com sucesso.\n");
     }
 
+}
+void bd_atualizar_paciente(Queue* bd){
+    int novo_id;
+
+    bd_consultar_paciente(bd);
+
+    printf("Digite o ID do registro a ser atualizado:\n");
+
+    printf("[Usuario]\n");
+    scanf("%d", &novo_id);
+    
 }
