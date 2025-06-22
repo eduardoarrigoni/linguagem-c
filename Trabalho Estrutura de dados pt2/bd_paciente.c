@@ -232,7 +232,7 @@ void paciente_imprimir(Paciente p) { //imprimir �nico paciente
 }
 void formatarCPF(const char *entrada, char *saida) {
     // Verifica se a string de entrada tem exatamente 11 dígitos
-    if (strlen(entrada) > 12) {
+    if (strlen(entrada) != 11) {
         sprintf(saida, "CPF inválido");
         return;
     }
@@ -251,28 +251,42 @@ void bd_inserir_paciente(Queue* bd){
     char saida_cpf[15];
 
     printf("Para inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
-    while (escolha != 's'){
-        scanf("%s", &cpf[25]);
-        scanf(" %s", &nome[50]);
+    while (escolha != 's' || escolha == 'q'){
+        scanf("%s", &cpf);
+        scanf(" %s", &nome);
         scanf(" %d", &idade);
-        scanf(" %s", &data_cadastro[20]);
+        scanf(" %s", &data_cadastro);
 
-        printf("Confirma a inserção do registro abaixo? (S/N)\n");
-        
         imprimir_cabecalho();
         printf("%-4d ", bd->total_pacientes);
         
         formatarCPF(cpf, saida_cpf);
         
         printf("%s ", saida_cpf);    
-        printf("%-30s %-5d %-12s\n", nome, idade, data_cadastro);
-            
+        printf(" %-30s %-5d %-12s\n", nome, idade, data_cadastro);
+        
+        printf("Confirma a inserção do registro? (S/N)\n");
         scanf(" %c", &escolha);
 
-        if (escolha == 'n'){
-            printf("Ops, preencha novamente: \n");
+        if(escolha == 'q'){
+            printf("Saindo...\n");
+        }else{
+
+            if (escolha != 's'){
+                printf("Ops, preencha novamente: \n");
+            }
         }
- 
+        
     }
-    printf("O registro foi inserido com sucesso.\n");
+    if(escolha == 's'){
+        
+        Paciente p;
+
+        p.id = bd->total_pacientes;
+        p.cpf = saida_cpf;
+        p.nome = nome;
+        p.
+        printf("O registro foi inserido com sucesso.\n");
+    }
+
 }
