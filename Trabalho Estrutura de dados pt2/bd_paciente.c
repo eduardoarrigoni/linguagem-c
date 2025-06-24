@@ -185,9 +185,10 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
 
     for (BDPaciente *p = bd->front; p != NULL; p = p->next) { //busca pelos poss�veis pacientes com o que foi digitado pelo usu�rio
         int encontra = 0;
-        if (escolha_modo == 1 && strstr(p->pacientes.nome, termo_busca)) { //utiliza��o de strstr() para encontrar primeira ocorr�ncia de uma substring na string principal
+        if (escolha_modo == 1 && search_prefix(p->pacientes.nome, termo_busca)) {
             encontra = 1;
-        } else if (escolha_modo == 2 && strstr(p->pacientes.cpf, termo_busca)) {
+        } 
+         else if (escolha_modo == 2 && search_prefix(p->pacientes.cpf, termo_busca)) {
             encontra = 1;
         }
 
@@ -312,8 +313,7 @@ void bd_atualizar_paciente(Queue* bd){
     scanf("%d", &id);
     
     printf("[Sistema]\n");
-    printf("Digite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e
-    Data_Cadastro (para manter o valor atual de um campo, digite ’-’):\n");
+    printf("Digite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro (para manter o valor atual de um campo, digite ’-’):\n");
     
     scanf("%s", &cpf);
     scanf(" %s", &nome);
@@ -322,5 +322,24 @@ void bd_atualizar_paciente(Queue* bd){
 
     printf("[Sistema]\n");
     printf("Confirma os novos valores para o registro abaixo? (S/N)\n");
+
+}
+int search_prefix(const char* nome, const char* termo_busca){
+
+    int count_prefix;
+    for (int i = 0; i < strlen(termo_busca); i++){
+    
+        if(termo_busca[i] == nome[i]){
+
+            count_prefix++;
+        }
+    }
+
+    if(count_prefix == strlen(termo_busca)){
+
+        return 1;
+    }
+
+    return 0;
 
 }

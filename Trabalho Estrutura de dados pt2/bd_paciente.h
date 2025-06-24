@@ -33,4 +33,6 @@ void bd_inserir_paciente(Queue* bd);
 
 void bd_atualizar_paciente(Queue* bd);
 
+int search_prefix(const char* nome, const char* termo_busca);
+
 #endif 

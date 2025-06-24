@@ -32,7 +32,7 @@ int main() {
             bd_consultar_paciente(bd);
         }
         if (opcao == '3'){
-            bd_atualizar_paciente(bd);
+            //bd_atualizar_paciente(bd);
         }
         if (opcao == '4'){
             //bd_remover_paciente(bd);
