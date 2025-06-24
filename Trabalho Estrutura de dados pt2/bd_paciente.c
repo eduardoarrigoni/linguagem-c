@@ -251,7 +251,7 @@ void bd_inserir_paciente(Queue* bd){
     char saida_cpf[15];
 
     printf("[Sistema]\nPara inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
-    while (escolha != 's' || escolha == 'q'){
+    while (escolha != 's'){
         scanf("%s", &cpf);
         scanf(" %s", &nome);
         scanf(" %d", &idade);
@@ -298,13 +298,29 @@ void bd_inserir_paciente(Queue* bd){
 
 }
 void bd_atualizar_paciente(Queue* bd){
-    int novo_id;
+    int id;
+    char cpf[25];
+    char nome[50];
+    int idade;
+    char data_cadastro[20];
 
     bd_consultar_paciente(bd);
 
     printf("Digite o ID do registro a ser atualizado:\n");
 
     printf("[Usuario]\n");
-    scanf("%d", &novo_id);
+    scanf("%d", &id);
     
+    printf("[Sistema]\n");
+    printf("Digite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e
+    Data_Cadastro (para manter o valor atual de um campo, digite ’-’):\n");
+    
+    scanf("%s", &cpf);
+    scanf(" %s", &nome);
+    scanf(" %d", &idade);
+    scanf(" %s", &data_cadastro);
+
+    printf("[Sistema]\n");
+    printf("Confirma os novos valores para o registro abaixo? (S/N)\n");
+
 }
