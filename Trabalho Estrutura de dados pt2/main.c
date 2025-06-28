@@ -35,7 +35,7 @@ int main() {
             //bd_atualizar_paciente(bd);
         }
         if (opcao == '4'){
-            //bd_remover_paciente(bd);
+            bd_remover_paciente(bd);
         }
         if (opcao == '5'){
             bd_imprimir_lista_pacientes(bd);

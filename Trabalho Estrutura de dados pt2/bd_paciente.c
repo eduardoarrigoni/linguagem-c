@@ -343,3 +343,57 @@ int search_prefix(const char* nome, const char* termo_busca){
     return 0;
 
 }
+
+void bd_remover_paciente(Queue* bd){
+
+    int id_remover;
+    int validador = 1;
+
+    bd_consultar_paciente(bd);
+
+    printf("Digite o ID do registro a ser removido:\n");
+
+    printf("[Usuário]\n");
+    scanf("%d", &id_remover);
+
+    BDPaciente *d = bd->front;
+    while(d.id != id_remover){
+
+        
+    }
+
+    free(d);
+
+    assert(!q_is_empty(q));
+
+    BDPaciente *p = bd->front; 
+
+    while(validador){
+
+        if(p->pacientes.id == id_remover){
+
+            if (p == bd->front){
+
+                bd->front = bd->front->next;
+            }
+            validador = 0;
+            free(p);
+        }else if(p->next == id_remover){
+            
+            if(p->next == bd->rear){
+
+                BDPaciente rem = bd->rear;
+                bd->rear = p;
+                free(rem);
+            }else{
+
+                BDPaciente rem = p->next;
+                p->next = p->next->next;
+                free(rem);
+            }
+        }
+    }
+        
+        p = p->next;
+    free(p);
+}
