@@ -253,10 +253,10 @@ void bd_inserir_paciente(Queue* bd){
 
     printf("[Sistema]\nPara inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
     while (escolha != 's'){
-        scanf("%s", &cpf);
-        scanf(" %s", &nome);
+        scanf("%s", &*cpf);
+        scanf(" %s", &*nome);
         scanf(" %d", &idade);
-        scanf(" %s", &data_cadastro);
+        scanf(" %s", &*data_cadastro);
 
         printf("[Sistema]\nConfirma a inserção do registro abaixo? (S/N)\n");
 
@@ -315,10 +315,10 @@ void bd_atualizar_paciente(Queue* bd){
     printf("[Sistema]\n");
     printf("Digite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro (para manter o valor atual de um campo, digite ’-’):\n");
     
-    scanf("%s", &cpf);
-    scanf(" %s", &nome);
+    scanf("%s", &*cpf);
+    scanf(" %s", &*nome);
     scanf(" %d", &idade);
-    scanf(" %s", &data_cadastro);
+    scanf(" %s", &*data_cadastro);
 
     printf("[Sistema]\n");
     printf("Confirma os novos valores para o registro abaixo? (S/N)\n");
@@ -347,7 +347,7 @@ int search_prefix(const char* nome, const char* termo_busca){
 void bd_remover_paciente(Queue* bd){
 
     int id_remover;
-    int validador = 1;
+    int validador = 0;
 
     bd_consultar_paciente(bd);
 
@@ -355,16 +355,24 @@ void bd_remover_paciente(Queue* bd){
 
     printf("[Usuário]\n");
     scanf("%d", &id_remover);
-
+    //Falta armazenar a lista de pacientes achados pelo search
     BDPaciente *d = bd->front;
-    while(d.id != id_remover){
+    while(d->pacientes.id != id_remover || d->next == NULL){
 
+        d = d->next;
         
+    }
+
+    if(d->pacientes.id == id_remover){
+
+        validador = 1;
+    }else{
+
     }
 
     free(d);
 
-    assert(!q_is_empty(q));
+    assert(!q_is_empty(bd));
 
     BDPaciente *p = bd->front; 
 
@@ -378,22 +386,24 @@ void bd_remover_paciente(Queue* bd){
             }
             validador = 0;
             free(p);
-        }else if(p->next == id_remover){
+        }else if(p->next->pacientes.id == id_remover){
             
             if(p->next == bd->rear){
 
-                BDPaciente rem = bd->rear;
+                BDPaciente *rem = bd->rear;
                 bd->rear = p;
                 free(rem);
             }else{
 
-                BDPaciente rem = p->next;
+                BDPaciente *rem = p->next;
                 p->next = p->next->next;
                 free(rem);
             }
+            
         }
     }
         
+
         p = p->next;
     free(p);
 }
