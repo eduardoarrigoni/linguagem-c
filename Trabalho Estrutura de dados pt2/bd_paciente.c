@@ -298,35 +298,77 @@ void bd_inserir_paciente(Queue* bd){
     }
 
 }
-void bd_atualizar_paciente(Queue* bd){
-    int id;
-    char cpf[25];
-    char nome[50];
-    int idade;
-    char data_cadastro[20];
+
+void bd_atualizar_paciente(Queue* bd) {
+    if (bd->total_pacientes == 0) {
+        printf("Nenhum paciente cadastrado para atualizacao.\n");
+        return;
+    }
+
+    int id_busca;
+    char buffer[100];
 
     bd_consultar_paciente(bd);
 
-    printf("Digite o ID do registro a ser atualizado:\n");
+    printf("\nDigite o ID do registro a ser atualizado: ");
+    scanf("%d", &id_busca);
+    getchar(); // Limpa newline do scanf
 
-    printf("[Usuario]\n");
-    scanf("%d", &id);
-    
-    printf("[Sistema]\n");
-    printf("Digite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro (para manter o valor atual de um campo, digite ’-’):\n");
-    
-    scanf("%s", &*cpf);
-    scanf(" %s", &*nome);
-    scanf(" %d", &idade);
-    scanf(" %s", &*data_cadastro);
+    BDPaciente *no = bd->front;
+    while (no && no->pacientes.id != id_busca) no = no->next;
 
-    printf("[Sistema]\n");
-    printf("Confirma os novos valores para o registro abaixo? (S/N)\n");
+    if (!no) {
+        printf("Paciente com ID %d nao encontrado.\n", id_busca);
+        return;
+    }
 
+    Paciente *p = &no->pacientes;
+    Paciente copia = *p; // Para exibir antes de confirmar
+
+    printf("\nDigite os novos valores (ou '-' para manter os atuais):\n");
+
+    printf("CPF (atual: %s): ", p->cpf);
+    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
+    if (strcmp(buffer, "-") != 0) {
+        formatarCPF(buffer, copia.cpf);
+    }
+
+    printf("Nome (atual: %s): ", p->nome);
+    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
+    if (strcmp(buffer, "-") != 0) {
+        strncpy(copia.nome, buffer, MAX_NOME_LEN);
+    }
+
+    printf("Idade (atual: %d): ", p->idade);
+    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
+    if (strcmp(buffer, "-") != 0) {
+        copia.idade = atoi(buffer);
+    }
+
+    printf("Data de cadastro (atual: %s): ", p->data_cadastro);
+    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
+    if (strcmp(buffer, "-") != 0) {
+        strncpy(copia.data_cadastro, buffer, MAX_DATA_LEN);
+    }
+
+    imprimir_cabecalho();
+    paciente_imprimir(copia);
+
+    printf("Confirma a atualização? (S/N): ");
+    char c;
+    scanf(" %c", &c);
+
+    if (tolower(c) == 's') {
+        *p = copia;
+        printf("Registro atualizado com sucesso!\n");
+    } else {
+        printf("Atualizacao cancelada.\n");
+    }
 }
+
 int search_prefix(const char* nome, const char* termo_busca){
 
-    int count_prefix;
+    int count_prefix = 0;
     for (int i = 0; i < strlen(termo_busca); i++){
     
         if(termo_busca[i] == nome[i]){
