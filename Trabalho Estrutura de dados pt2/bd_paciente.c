@@ -306,7 +306,7 @@ void bd_atualizar_paciente(Queue* bd) {
     }
 
     int id_busca;
-    char buffer[100];
+    char mem_temporaria[100];
 
     bd_consultar_paciente(bd);
 
@@ -328,27 +328,27 @@ void bd_atualizar_paciente(Queue* bd) {
     printf("\nDigite os novos valores (ou '-' para manter os atuais):\n");
 
     printf("CPF (atual: %s): ", p->cpf);
-    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
-    if (strcmp(buffer, "-") != 0) {
-        formatarCPF(buffer, copia.cpf);
+    fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
+    if (strcmp(mem_temporaria, "-") != 0) {
+        formatarCPF(mem_temporaria, copia.cpf);
     }
 
     printf("Nome (atual: %s): ", p->nome);
-    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
-    if (strcmp(buffer, "-") != 0) {
-        strncpy(copia.nome, buffer, MAX_NOME_LEN);
+    fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
+    if (strcmp(mem_temporaria, "-") != 0) {
+        strncpy(copia.nome, mem_temporaria, MAX_NOME_LEN);
     }
 
     printf("Idade (atual: %d): ", p->idade);
-    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
-    if (strcmp(buffer, "-") != 0) {
-        copia.idade = atoi(buffer);
+    fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
+    if (strcmp(mem_temporaria, "-") != 0) {
+        copia.idade = atoi(mem_temporaria);
     }
 
     printf("Data de cadastro (atual: %s): ", p->data_cadastro);
-    fgets(buffer, sizeof(buffer), stdin); excluir_espaco_branco(buffer);
-    if (strcmp(buffer, "-") != 0) {
-        strncpy(copia.data_cadastro, buffer, MAX_DATA_LEN);
+    fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
+    if (strcmp(mem_temporaria, "-") != 0) {
+        strncpy(copia.data_cadastro, mem_temporaria, MAX_DATA_LEN);
     }
 
     imprimir_cabecalho();
