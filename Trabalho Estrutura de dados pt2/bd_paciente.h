@@ -37,4 +37,6 @@ void bd_remover_paciente(Queue* bd);
 
 int search_prefix(const char* nome, const char* termo_busca);
 
+void formatar_prefix_cpf(const char *entrada, char *saida);
+
 #endif 

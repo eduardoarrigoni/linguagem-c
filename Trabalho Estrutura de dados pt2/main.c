@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bd_paciente.h"
+#include <ctype.h>
 
 int main() {
     char filename[100];
@@ -14,7 +15,7 @@ int main() {
     }
 
     char opcao;
-    while (opcao != 'q') { //menu principal
+    while (tolower(opcao) != 'q') { //menu principal
         printf("\n--- Sistema de Pacientes ---\n");
         printf("1. Inserir paciente\n");
         printf("2. Consultar paciente\n");
@@ -32,7 +33,7 @@ int main() {
             bd_consultar_paciente(bd);
         }
         if (opcao == '3'){
-            //bd_atualizar_paciente(bd);
+            bd_atualizar_paciente(bd);
         }
         if (opcao == '4'){
             bd_remover_paciente(bd);
@@ -40,7 +41,8 @@ int main() {
         if (opcao == '5'){
             bd_imprimir_lista_pacientes(bd);
         }
-        if (opcao == 'q'){
+        //colocar maiusculo e minusculo
+        if (tolower(opcao) == 'q'){
             printf("Saindo...\n");
         }
     }

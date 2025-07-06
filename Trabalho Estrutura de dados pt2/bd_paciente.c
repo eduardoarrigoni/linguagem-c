@@ -153,12 +153,13 @@ void imprimir_cabecalho() { //exibir o cabe�alho da tabela de pacientes
 void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
     if (bd->total_pacientes == 0) {
         printf("Nenhum paciente cadastrado para consulta.\n");
-        return;
+
     }
 
     int escolha_modo;
     char termo_busca[MAX_NOME_LEN];
     int encontrados = 0;
+    char prefix_cpf[20];
 
     while (1) { //loop at� a op��o inserida ser v�lida
         printf("[Sistema]\nEscolha o modo de consulta:\n");
@@ -169,26 +170,36 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
         scanf("%d", &escolha_modo);
         getchar();
 
+
         if (escolha_modo == 3) return;
 
-        if (escolha_modo == 1 || escolha_modo == 2) {
-            printf("[Sistema] Digite o termo: ");
+        if (escolha_modo == 1) {
+            printf("[Sistema]\n Digite o nome: ");
             fgets(termo_busca, sizeof(termo_busca), stdin);
             excluir_espaco_branco(termo_busca);
             break;
-        } else {
-            printf("Opcao invalida. Por favor, escolha 1, 2 ou 3.\n");
+        } else if(escolha_modo == 2) {
+            printf("[Sistema]\n Digite o cpf: ");
+            fgets(termo_busca, sizeof(termo_busca), stdin);
+            excluir_espaco_branco(termo_busca);
+            
+            formatar_prefix_cpf(termo_busca, prefix_cpf);
+            break;
+        }else{
+            
+            printf("[Sistema]\nOpcao invalida. Por favor, escolha 1, 2 ou 3.\n");
         }
     }
 
-    imprimir_cabecalho();
 
+    imprimir_cabecalho();
+    
     for (BDPaciente *p = bd->front; p != NULL; p = p->next) { //busca pelos poss�veis pacientes com o que foi digitado pelo usu�rio
         int encontra = 0;
         if (escolha_modo == 1 && search_prefix(p->pacientes.nome, termo_busca)) {
             encontra = 1;
         } 
-         else if (escolha_modo == 2 && search_prefix(p->pacientes.cpf, termo_busca)) {
+         else if (escolha_modo == 2 && search_prefix(p->pacientes.cpf, prefix_cpf)) {
             encontra = 1;
         }
 
@@ -199,32 +210,32 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
     }
 
     if (encontrados == 0) {
-        printf("Nenhum paciente encontrado com o termo '%s'.\n", termo_busca);
+        printf("[Sistema]\nNenhum paciente encontrado com o termo '%s'.\n", termo_busca);
     } else {
-        printf("\nTotal de pacientes encontrados: %d\n", encontrados);
+        printf("\n[Sistema]\nTotal de pacientes encontrados: %d\n", encontrados);
     }
 }
 
 void bd_imprimir_lista_pacientes(Queue* bd) { //imprimir todos pacientes
     if (bd->total_pacientes == 0) {
-        printf("Nenhum paciente cadastrado para imprimir.\n");
+        printf("[Sistema]\nNenhum paciente cadastrado para imprimir.\n");
         return;
     }
 
-    printf("\nImprimindo lista de pacientes...\n");
+    printf("\n[Sistema]\nImprimindo lista de pacientes...\n");
     imprimir_cabecalho();
 
 	for (BDPaciente *p = bd->front; p != NULL; p = p->next) {
         paciente_imprimir(p->pacientes);
 		int a = 0;
         if ((a + 1) % TAMANHO_PAGINA == 0 && (a + 1) < bd->total_pacientes) { //pagina��o
-            printf("\nPressione ENTER para ver a proxima pagina...\n");
+            printf("\n[Sistema]\nPressione ENTER para ver a proxima pagina...\n");
             while (getchar() != '\n');
         }
         a += 1;
     }
 
-    printf("\nFim da lista de pacientes.\n");
+    printf("\n[Sistema]\nFim da lista de pacientes.\n");
 }
 
 void paciente_imprimir(Paciente p) { //imprimir �nico paciente
@@ -250,6 +261,7 @@ void bd_inserir_paciente(Queue* bd){
     char data_cadastro[20];
     char escolha = 'n';
     char saida_cpf[15];
+    int cpf_igual = 1;
 
     printf("[Sistema]\nPara inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
     while (escolha != 's'){
@@ -258,12 +270,24 @@ void bd_inserir_paciente(Queue* bd){
         scanf(" %d", &idade);
         scanf(" %s", &*data_cadastro);
 
+        formatarCPF(cpf, saida_cpf);
+        while(cpf_igual == 1){
+            cpf_igual = 0;
+            for (BDPaciente *p = bd->front; p != NULL; p = p->next){
+                
+                if(saida_cpf == p->pacientes.cpf){
+                    printf("q");
+    
+                    printf("[Sistema]\nEsse cpf já está cadastrado, digite outro: \n");
+                    cpf_igual = 1;
+                }
+            }
+
+        }
         printf("[Sistema]\nConfirma a inserção do registro abaixo? (S/N)\n");
 
         imprimir_cabecalho();
         printf("%-4d ", bd->total_pacientes);
-        
-        formatarCPF(cpf, saida_cpf);
         
         printf("%s ", saida_cpf);    
         printf(" %-30s %-5d %-12s\n", nome, idade, data_cadastro);
@@ -272,6 +296,7 @@ void bd_inserir_paciente(Queue* bd){
 
         if (escolha != 's'){
             printf("[Sistema]\nOps, preencha novamente: \n");
+            cpf_igual = 1;
         }
         
         
@@ -301,7 +326,7 @@ void bd_inserir_paciente(Queue* bd){
 
 void bd_atualizar_paciente(Queue* bd) {
     if (bd->total_pacientes == 0) {
-        printf("Nenhum paciente cadastrado para atualizacao.\n");
+        printf("[Sistema]\nNenhum paciente cadastrado para atualizacao.\n");
         return;
     }
 
@@ -310,7 +335,7 @@ void bd_atualizar_paciente(Queue* bd) {
 
     bd_consultar_paciente(bd);
 
-    printf("\nDigite o ID do registro a ser atualizado: ");
+    printf("\n[Sistema]\nDigite o ID do registro a ser atualizado: ");
     scanf("%d", &id_busca);
     getchar(); // Limpa newline do scanf
 
@@ -318,34 +343,34 @@ void bd_atualizar_paciente(Queue* bd) {
     while (no && no->pacientes.id != id_busca) no = no->next;
 
     if (!no) {
-        printf("Paciente com ID %d nao encontrado.\n", id_busca);
+        printf("[Sistema]\nPaciente com ID %d nao encontrado.\n", id_busca);
         return;
     }
 
     Paciente *p = &no->pacientes;
     Paciente copia = *p; // Para exibir antes de confirmar
 
-    printf("\nDigite os novos valores (ou '-' para manter os atuais):\n");
+    printf("\n[Sistema]\nDigite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro (para manter o valor atual de um campo, digite -):\n");
 
-    printf("CPF (atual: %s): ", p->cpf);
+    
     fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
     if (strcmp(mem_temporaria, "-") != 0) {
         formatarCPF(mem_temporaria, copia.cpf);
     }
 
-    printf("Nome (atual: %s): ", p->nome);
+    
     fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
     if (strcmp(mem_temporaria, "-") != 0) {
         strncpy(copia.nome, mem_temporaria, MAX_NOME_LEN);
     }
 
-    printf("Idade (atual: %d): ", p->idade);
+    
     fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
     if (strcmp(mem_temporaria, "-") != 0) {
         copia.idade = atoi(mem_temporaria);
     }
 
-    printf("Data de cadastro (atual: %s): ", p->data_cadastro);
+    
     fgets(mem_temporaria, sizeof(mem_temporaria), stdin); excluir_espaco_branco(mem_temporaria);
     if (strcmp(mem_temporaria, "-") != 0) {
         strncpy(copia.data_cadastro, mem_temporaria, MAX_DATA_LEN);
@@ -449,3 +474,28 @@ void bd_remover_paciente(Queue* bd){
         p = p->next;
     free(p);
 }
+
+void formatar_prefix_cpf(const char *entrada, char *saida){
+
+    int a = 0;
+    int i = 0;
+    while(a <= strlen(entrada)){
+
+        if(i == 3 || i == 7){
+            //333.333.333-33
+            saida[i] = '.';
+            i++;
+
+        }else if(i == 11){
+
+            saida[i] = '-';
+            i++;
+        }else{
+
+            saida[i] = entrada[a];
+            i++;
+            a++;
+        }
+    }
+}
+
