@@ -33,7 +33,8 @@ Queue *q_create()
 {
    Queue *q = (Queue *)malloc(sizeof(Queue)); // Allocate memory for the queue structure.
    q->front = q->rear = NULL;
-   printf("Base de dados criada.\n");                // Initialize the front and rear pointers to NULL, indicating an empty queue.
+   printf("Base de dados criada.\n");
+   q->total_pacientes = 0;                // Initialize the front and rear pointers to NULL, indicating an empty queue.
    return q;
 }
 int q_is_empty(Queue *bd)
@@ -54,18 +55,19 @@ void inserir_na_fila(Queue *bd, Paciente paciente){
     bd->rear = node;
 }
 Paciente remover_da_fila(Queue *bd){
-   assert(!q_is_empty(bd));
+    assert(!q_is_empty(bd));
 
-   Paciente v = bd->front->pacientes;
-   BDPaciente *p = bd->front; // Store for removal
+    Paciente v = bd->front->pacientes;
+    BDPaciente *p = bd->front; // Store for removal
 
-   if (bd->front != bd->rear)
-      bd->front = bd->front->next;
-   else
-      bd->front = bd->rear = NULL;
+    if (bd->front != bd->rear)
+        bd->front = bd->front->next;
+    else
+        bd->front = bd->rear = NULL;
 
-   free(p);
-   return v;
+    bd->total_pacientes -= 1;
+    free(p);
+    return v;
 }
 void q_free(Queue *bd)
 {
@@ -95,14 +97,11 @@ int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a pa
     }
     
     char line[256];
-    int first_line = 1;
+    
     
     bd->total_pacientes = 0;
     
     while (fgets(line, sizeof(line), file) != NULL) {
-        if (first_line) {
-            first_line = 0;
-        }
         
         excluir_espaco_branco(line);
         
@@ -112,7 +111,12 @@ int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a pa
         
         Paciente p; //leitura e separação dos campos do csv
         char *token = strtok(line, ",");
-        if (token) p.id = atoi(token);
+        if (token){
+            if (atoi(token) == 0){
+                continue;
+            }
+            p.id = atoi(token);
+        } 
         
         token = strtok(NULL, ",");
         if (token) {
@@ -265,21 +269,22 @@ void bd_inserir_paciente(Queue* bd){
 
     printf("[Sistema]\nPara inserir um novo registro, digite os valores para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro(precione enter a cada informação escrita):\n");
     while (escolha != 's'){
-        scanf("%s", &*cpf);
+        scanf(" %s", &*cpf);
         scanf(" %s", &*nome);
         scanf(" %d", &idade);
         scanf(" %s", &*data_cadastro);
 
         formatarCPF(cpf, saida_cpf);
+        
         while(cpf_igual == 1){
             cpf_igual = 0;
             for (BDPaciente *p = bd->front; p != NULL; p = p->next){
                 
                 if(saida_cpf == p->pacientes.cpf){
-                    printf("q");
-    
+                    
                     printf("[Sistema]\nEsse cpf já está cadastrado, digite outro: \n");
                     cpf_igual = 1;
+                    break;
                 }
             }
 
@@ -287,7 +292,7 @@ void bd_inserir_paciente(Queue* bd){
         printf("[Sistema]\nConfirma a inserção do registro abaixo? (S/N)\n");
 
         imprimir_cabecalho();
-        printf("%-4d ", bd->total_pacientes);
+        printf("%-4d ", bd->total_pacientes + 1);
         
         printf("%s ", saida_cpf);    
         printf(" %-30s %-5d %-12s\n", nome, idade, data_cadastro);
@@ -295,7 +300,12 @@ void bd_inserir_paciente(Queue* bd){
         scanf(" %c", &escolha);
 
         if (escolha != 's'){
-            printf("[Sistema]\nOps, preencha novamente: \n");
+            printf("[Sistema]\n1. Sair\n");
+            printf("2. Preencher novamente\n");
+            scanf(" %c", &escolha);
+            if (escolha == '1'){
+                return;
+            }
             cpf_igual = 1;
         }
         
@@ -414,7 +424,9 @@ int search_prefix(const char* nome, const char* termo_busca){
 void bd_remover_paciente(Queue* bd){
 
     int id_remover;
-    int validador = 0;
+    int validador = 1;
+    char excluir;
+    int flag_removido = 0;
 
     bd_consultar_paciente(bd);
 
@@ -422,38 +434,36 @@ void bd_remover_paciente(Queue* bd){
 
     printf("[Usuário]\n");
     scanf("%d", &id_remover);
-    //Falta armazenar a lista de pacientes achados pelo search
+    
+    printf("[Sistema]\nTem certeza de que deseja excluir o registro abaixo? (S/N)\n");
+
     BDPaciente *d = bd->front;
-    while(d->pacientes.id != id_remover || d->next == NULL){
+    while(validador){
 
+        if(d->pacientes.id == id_remover){
+            imprimir_cabecalho();
+            paciente_imprimir(d->pacientes);
+            validador = 0;
+        }
         d = d->next;
-        
     }
+    scanf(" %c", &excluir);
 
-    if(d->pacientes.id == id_remover){
-
-        validador = 1;
-    }else{
-
-    }
-
-    free(d);
-
-    assert(!q_is_empty(bd));
+    if(tolower(excluir) == 'n') return;
 
     BDPaciente *p = bd->front; 
 
-    while(validador){
+    while(p->next != NULL){
 
-        if(p->pacientes.id == id_remover){
+        if((p->pacientes.id == id_remover) && flag_removido == 0){
 
             if (p == bd->front){
 
                 bd->front = bd->front->next;
+                flag_removido = 1;
             }
-            validador = 0;
-            free(p);
-        }else if(p->next->pacientes.id == id_remover){
+            
+        }else if((p->next->pacientes.id == id_remover) && flag_removido == 0){
             
             if(p->next == bd->rear){
 
@@ -466,13 +476,15 @@ void bd_remover_paciente(Queue* bd){
                 p->next = p->next->next;
                 free(rem);
             }
-            
+            flag_removido = 1;
+        }
+        p = p->next;
+        if(flag_removido){
+            p->pacientes.id -= 1;
         }
     }
-        
-
-        p = p->next;
     free(p);
+    printf("[Sistema]\nRegistro removido com sucesso.\n");
 }
 
 void formatar_prefix_cpf(const char *entrada, char *saida){

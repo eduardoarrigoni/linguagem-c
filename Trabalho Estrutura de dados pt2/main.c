@@ -24,25 +24,29 @@ int main() {
         printf("5. Imprimir todos os pacientes\n");
         printf("Q. Sair\n");
         printf("Escolha uma opcao: ");
-        scanf("%c", &opcao);
+        scanf(" %c", &opcao);
 
         if (opcao == '1') { // executa de acordo com op��o escolhida
+            
             bd_inserir_paciente(bd);
-        }
-        if (opcao == '2'){
+            
+        }else if (opcao == '2'){
+
             bd_consultar_paciente(bd);
-        }
-        if (opcao == '3'){
+
+        }else if (opcao == '3'){
+
             bd_atualizar_paciente(bd);
-        }
-        if (opcao == '4'){
+
+        }else if (opcao == '4'){
+
             bd_remover_paciente(bd);
-        }
-        if (opcao == '5'){
+
+        }else if (opcao == '5'){
+
             bd_imprimir_lista_pacientes(bd);
-        }
-        //colocar maiusculo e minusculo
-        if (tolower(opcao) == 'q'){
+
+        }else if (tolower(opcao) == 'q'){
             printf("Saindo...\n");
         }
     }
