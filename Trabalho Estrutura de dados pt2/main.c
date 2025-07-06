@@ -6,7 +6,7 @@
 
 int main() {
     char filename[100];
-    printf("Diga o nome do arquivo para que possamos carrega-lo: "); //nome do arquivo csv que o usu�rio quer carregar
+    printf("Diga o nome do arquivo para que possamos carrega-lo: "); //nome do arquivo csv que o usuario quer carregar
     scanf("%99s", filename);
 
     Queue *bd = q_create(); //criar base de dados de pacientes
@@ -26,8 +26,8 @@ int main() {
         printf("Escolha uma opcao: ");
         scanf(" %c", &opcao);
 
-        if (opcao == '1') { // executa de acordo com op��o escolhida
-            
+        if (opcao == '1') { // executa de acordo com opcao escolhida
+
             bd_inserir_paciente(bd);
             
         }else if (opcao == '2'){
@@ -51,6 +51,6 @@ int main() {
         }
     }
 
-    q_free(bd); //liberar mem�ria base de dados
+    q_free(bd); //liberar memoria base de dados
     return 0;
 }
