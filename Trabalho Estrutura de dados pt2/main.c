@@ -15,7 +15,7 @@ int main() {
     }
 
     char opcao;
-    while (tolower(opcao) != 'q') { //menu principal
+    while (tolower(opcao) != 'q') { //menu principal com opcao para ser escrito em maiusculo ou minusculo para sair
         printf("\n--- Sistema de Pacientes ---\n");
         printf("1. Inserir paciente\n");
         printf("2. Consultar paciente\n");
