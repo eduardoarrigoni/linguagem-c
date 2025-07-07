@@ -276,19 +276,6 @@ void bd_inserir_paciente(Queue* bd){
 
         formatarCPF(cpf, saida_cpf);
         
-        while(cpf_igual == 1){
-            cpf_igual = 0;
-            for (BDPaciente *p = bd->front; p != NULL; p = p->next){
-                
-                if(saida_cpf == p->pacientes.cpf){
-                    
-                    printf("[Sistema]\nEsse cpf já está cadastrado, digite outro: \n");
-                    cpf_igual = 1;
-                    break;
-                }
-            }
-
-        }
         printf("[Sistema]\nConfirma a inserção do registro abaixo? (S/N)\n");
 
         imprimir_cabecalho();
