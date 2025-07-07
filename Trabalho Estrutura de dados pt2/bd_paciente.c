@@ -12,11 +12,11 @@
 
 struct queue
 {
-   BDPaciente *front; // Pointer to the front of the queue.
+   BDPaciente *front; 
    BDPaciente *rear;
-   int total_pacientes;  // Pointer to the rear of the queue.
+   int total_pacientes; 
 };
-struct paciente { //estrutura para cada paciente
+struct paciente { 
     int id;
     char cpf[MAX_CPF_LEN];
     char nome[MAX_NOME_LEN];
@@ -31,10 +31,10 @@ struct bdpaciente {
 
 Queue *q_create()
 {
-   Queue *q = (Queue *)malloc(sizeof(Queue)); // Allocate memory for the queue structure.
+   Queue *q = (Queue *)malloc(sizeof(Queue)); 
    q->front = q->rear = NULL;
    printf("Base de dados criada.\n");
-   q->total_pacientes = 0;                // Initialize the front and rear pointers to NULL, indicating an empty queue.
+   q->total_pacientes = 0;                
    return q;
 }
 int q_is_empty(Queue *bd)
@@ -58,7 +58,7 @@ Paciente remover_da_fila(Queue *bd){
     assert(!q_is_empty(bd));
 
     Paciente v = bd->front->pacientes;
-    BDPaciente *p = bd->front; // Store for removal
+    BDPaciente *p = bd->front; 
 
     if (bd->front != bd->rear)
         bd->front = bd->front->next;
@@ -74,14 +74,14 @@ void q_free(Queue *bd)
    BDPaciente *p = bd->front;
    while (p != NULL)
    {
-      BDPaciente *t = p->next; // Store a reference to the next node.
-      free(p);                // Free the memory allocated for the current node.
-      p = t;                  // Move to the next node.
+      BDPaciente *t = p->next; 
+      free(p);                
+      p = t;                  
    }
-   free(bd); // Free the memory allocated for the queue structure itself.
+   free(bd); 
 }
 
-void excluir_espaco_branco(char *s) { //remover espa�os em branco no final da string
+void excluir_espaco_branco(char *s) { 
     int i = strlen(s) - 1;
     while (i >= 0 && isspace((unsigned char)s[i])) {
         s[i] = '\0';
@@ -89,7 +89,7 @@ void excluir_espaco_branco(char *s) { //remover espa�os em branco no final da 
     }
 }
 
-int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a partir de um arquivo csv
+int bd_carregar_csv(Queue* bd, const char* filename) { 
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         fprintf(stderr, "Erro: Nao foi possivel abrir o arquivo '%s'.\n", filename);
@@ -109,7 +109,7 @@ int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a pa
             continue;
         }
         
-        Paciente p; //leitura e separação dos campos do csv
+        Paciente p; 
         char *token = strtok(line, ",");
         if (token){
             if (atoi(token) == 0){
@@ -148,13 +148,13 @@ int bd_carregar_csv(Queue* bd, const char* filename) { //carregar pacientes a pa
     return 0;
 }
 
-void imprimir_cabecalho() { //exibir o cabe�alho da tabela de pacientes
+void imprimir_cabecalho() { 
     printf("\n");
     printf("%-4s %-15s %-30s %-5s %-12s\n", "ID", "CPF", "Nome", "Idade", "Data_Cadastro");
     printf("---- --------------- ------------------------------ ----- ------------\n");
 }
 
-void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
+void bd_consultar_paciente(Queue* bd) { 
     if (bd->total_pacientes == 0) {
         printf("Nenhum paciente cadastrado para consulta.\n");
 
@@ -165,7 +165,7 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
     int encontrados = 0;
     char prefix_cpf[20];
 
-    while (1) { //loop at� a op��o inserida ser v�lida
+    while (1) { 
         printf("[Sistema]\nEscolha o modo de consulta:\n");
         printf("1 - Por nome\n");
         printf("2 - Por CPF\n");
@@ -198,7 +198,7 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
 
     imprimir_cabecalho();
     
-    for (BDPaciente *p = bd->front; p != NULL; p = p->next) { //busca pelos poss�veis pacientes com o que foi digitado pelo usu�rio
+    for (BDPaciente *p = bd->front; p != NULL; p = p->next) { 
         int encontra = 0;
         if (escolha_modo == 1 && search_prefix(p->pacientes.nome, termo_busca)) {
             encontra = 1;
@@ -220,7 +220,7 @@ void bd_consultar_paciente(Queue* bd) { //consulta do paciente por nome ou cpf
     }
 }
 
-void bd_imprimir_lista_pacientes(Queue* bd) { //imprimir todos pacientes
+void bd_imprimir_lista_pacientes(Queue* bd) { 
     if (bd->total_pacientes == 0) {
         printf("[Sistema]\nNenhum paciente cadastrado para imprimir.\n");
         return;
@@ -232,7 +232,7 @@ void bd_imprimir_lista_pacientes(Queue* bd) { //imprimir todos pacientes
 	for (BDPaciente *p = bd->front; p != NULL; p = p->next) {
         paciente_imprimir(p->pacientes);
 		int a = 0;
-        if ((a + 1) % TAMANHO_PAGINA == 0 && (a + 1) < bd->total_pacientes) { //pagina��o
+        if ((a + 1) % TAMANHO_PAGINA == 0 && (a + 1) < bd->total_pacientes) { 
             printf("\n[Sistema]\nPressione ENTER para ver a proxima pagina...\n");
             while (getchar() != '\n');
         }
@@ -242,18 +242,18 @@ void bd_imprimir_lista_pacientes(Queue* bd) { //imprimir todos pacientes
     printf("\n[Sistema]\nFim da lista de pacientes.\n");
 }
 
-void paciente_imprimir(Paciente p) { //imprimir �nico paciente
+void paciente_imprimir(Paciente p) { 
     printf("%-4d %-15s %-30s %-5d %-12s\n",
            p.id, p.cpf, p.nome, p.idade, p.data_cadastro);
 }
 void formatarCPF(const char *entrada, char *saida) {
-    // Verifica se a string de entrada tem exatamente 11 dígitos
+    
     if (strlen(entrada) != 11) {
         sprintf(saida, "CPF inválido");
         return;
     }
 
-    // Formata a string no padrão XXX.XXX.XXX-XX
+    
     sprintf(saida, "%.3s.%.3s.%.3s-%.2s",
             entrada, entrada + 3, entrada + 6, entrada + 9);
 }
@@ -347,7 +347,7 @@ void bd_atualizar_paciente(Queue* bd) {
 
     printf("\n[Sistema]\nDigite o ID do registro a ser atualizado: ");
     scanf("%d", &id_busca);
-    getchar(); // Limpa newline do scanf
+    getchar(); 
 
     BDPaciente *no = bd->front;
     while (no && no->pacientes.id != id_busca) no = no->next;
@@ -358,7 +358,7 @@ void bd_atualizar_paciente(Queue* bd) {
     }
 
     Paciente *p = &no->pacientes;
-    Paciente copia = *p; // Para exibir antes de confirmar
+    Paciente copia = *p; 
 
     printf("\n[Sistema]\nDigite o novo valor para os campos CPF (apenas dígitos), Nome, Idade e Data_Cadastro (para manter o valor atual de um campo, digite -):\n");
 
