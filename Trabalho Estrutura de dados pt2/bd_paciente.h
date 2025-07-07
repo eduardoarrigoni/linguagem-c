@@ -5,9 +5,7 @@ typedef struct bdpaciente BDPaciente;
 typedef struct paciente Paciente;
 typedef struct queue Queue;
 
-BDPaciente* bd_criar();
-
-Queue *q_create();
+Queue *q_create(); 
 
 void inserir_na_fila(Queue *bd, Paciente paciente);
 
