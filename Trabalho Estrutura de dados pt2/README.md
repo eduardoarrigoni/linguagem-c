@@ -34,11 +34,11 @@ Este projeto é um sistema em linguagem C para o gerenciamento de pacientes. Ele
 
 Para que a execução seja feita de forma correta, é aconselhável que os arquivos(makefile, main.c, bd_paciente.c e bd_paciente.h) do sistema, sejam colocados em uma pasta com o nome de sua preferência. Após isso, a execução é feita utilizando o ambiente Linux Ubuntu, onde deve-se escrever o caminho em que a pasta está, exemplo: cd /mnt/d/Documents/sistema_pacientes -> exemplo do caminho em que a pasta vai estar. Em seguida, deve-se digitar make para compilar e executar o programa. Então, o programa irá pedir para que insira o nome do arquivo csv que vai rodar no sistema, exemplo: bancodedados.csv. O programa estará pronto para rodar.
 
-Resumindo: 1. Guardar arquivos (makefile, main.c, bd_paciente.c e bd_paciente.h) em uma pasta;
-           2. Executar no ambiente Linux Ubuntu;
-           3. Escrever caminho da pasta;
-           4. Digitar make para compilar e executar o programa;
-           5. Inserir nome do arquivo .csv.
+Passo a passo: - Guardar arquivos (makefile, main.c, bd_paciente.c e bd_paciente.h) em uma pasta;
+               - Executar no ambiente Linux Ubuntu;
+               - Escrever caminho da pasta;
+               - Digitar make para compilar e executar o programa;
+               - Inserir nome do arquivo .csv.
 
 
 # Principais TADs
